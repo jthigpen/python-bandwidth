@@ -33,7 +33,7 @@ class Event(object):
             event_as_dict = from_api(kwargs)
         event_cls = _events.get(event_as_dict.get('event_type', ''))
         if not event_cls:
-            raise ValueError('Unknown event {}'.format(event_as_dict))
+            raise ValueError('Unknown event {0}'.format(event_as_dict))
         return event_cls(**event_as_dict)
 
 
@@ -59,7 +59,7 @@ class CallEvent(EventType):
         return Call(self.call_id)
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.call_id)
+        return '{0}({1})'.format(self.__class__.__name__, self.call_id)
 
 
 class IncomingCallEvent(CallEvent):
@@ -257,7 +257,7 @@ class TranscriptionEvent(EventType):
                          'transcription_uri'))
 
     def __repr__(self):
-        return 'TranscriptionEvent(transcription_id={})'.format(self.transcription_id)
+        return 'TranscriptionEvent(transcription_id={0})'.format(self.transcription_id)
 
 
 class MessageEvent(EventType):
@@ -283,7 +283,7 @@ class MessageEvent(EventType):
                          'delivery_description'))
 
     def __repr__(self):
-        return 'MessageEvent(message_id={})'.format(self.message_id)
+        return 'MessageEvent(message_id={0})'.format(self.message_id)
 
     @property
     def message(self):
@@ -301,7 +301,7 @@ class ConferenceEventMixin(EventType):
         return Conference(self.conference_id)
 
     def __repr__(self):
-        return '{}(conference_id={})'.format(self.__class__.__name__, self.conference_id)
+        return '{0}(conference_id={1})'.format(self.__class__.__name__, self.conference_id)
 
 
 class ConferenceEvent(ConferenceEventMixin):

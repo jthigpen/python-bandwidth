@@ -28,7 +28,7 @@ class BaseResource(object):
                 setattr(self, k, v)
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.id)
+        return '{0}({1})'.format(self.__class__.__name__, self.id)
 
 
 class CreateResource(BaseResource):
@@ -179,7 +179,7 @@ class Call(AudioMixin, GenericResource):
         :return: new Call instance with all provided fields.
         """
         client = cls.client or get_client()
-        url = '{}/{}'.format(cls.path, call_id)
+        url = '{0}/{1}'.format(cls.path, call_id)
         data_as_dict = client.get(url).json()
         return cls(data_as_dict)
 
@@ -214,7 +214,7 @@ class Call(AudioMixin, GenericResource):
         return 'Call(%r, state=%r)' % (self.call_id, self.state or 'Unknown')
 
     def get_audio_url(self):
-        return '{}/{}/audio'.format(self.path, self.call_id)
+        return '{0}/{1}/audio'.format(self.path, self.call_id)
 
     # Call manipulation
     def transfer(self, phone, **kwargs):
@@ -226,7 +226,7 @@ class Call(AudioMixin, GenericResource):
             {'sentence': 'Hello {number}, thanks for calling'}
         :return: new Call instance
         """
-        url = '{}/{}'.format(self.path, self.call_id)
+        url = '{0}/{1}'.format(self.path, self.call_id)
         json_data = {'transfer_to': phone,
                      'state': Call.STATES.transferring}
         json_data.update(kwargs)
@@ -238,7 +238,7 @@ class Call(AudioMixin, GenericResource):
         return call
 
     def set_call_property(self, **kwargs):
-        url = '{}/{}'.format(self.path, self.call_id)
+        url = '{0}/{1}'.format(self.path, self.call_id)
         self.client.post(url, data=to_api(kwargs))
         self.set_up(from_api(kwargs))
         return self
@@ -258,7 +258,7 @@ class Call(AudioMixin, GenericResource):
         Updates call fields internally for this call instance
         :return: None
         """
-        url = '{}/{}'.format(self.path, self.call_id)
+        url = '{0}/{1}'.format(self.path, self.call_id)
         data = self.client.get(url).json()
         self.set_up(from_api(data))
 
@@ -266,7 +266,7 @@ class Call(AudioMixin, GenericResource):
         """
         Hangs up a call with the given call_id
         """
-        url = '{}/{}'.format(self.path, self.call_id)
+        url = '{0}/{1}'.format(self.path, self.call_id)
 
         json_data = {'state': Call.STATES.completed}
         self.client.post(url, data=to_api(json_data))
@@ -276,7 +276,7 @@ class Call(AudioMixin, GenericResource):
         """
         Hangs up a call with the given call_id
         """
-        url = '{}/{}'.format(self.path, self.call_id)
+        url = '{0}/{1}'.format(self.path, self.call_id)
 
         json_data = {'state': Call.STATES.rejected}
         self.client.post(url, data=to_api(json_data))
@@ -288,7 +288,7 @@ class Call(AudioMixin, GenericResource):
         Sends a string of characters as DTMF on the given call_id
         Valid chars are '0123456789*#ABCD'
         """
-        url = '{}/{}/dtmf'.format(self.path, self.call_id)
+        url = '{0}/{1}/dtmf'.format(self.path, self.call_id)
 
         json_data = to_api({'dtmf_out': dtmf})
 
@@ -302,7 +302,7 @@ class Call(AudioMixin, GenericResource):
         """
         Retrieves an array with all the recordings of the call_id
         """
-        url = '{}/{}/recordings'.format(self.path, self.call_id)
+        url = '{0}/{1}/recordings'.format(self.path, self.call_id)
         recordings = self.client.get(url).json()
         return [Recording(d) for d in recordings]
 
@@ -310,7 +310,7 @@ class Call(AudioMixin, GenericResource):
         """
         Gets the events that occurred during the call. No query parameters are supported.
         """
-        url = '{}/{}/events'.format(self.path, self.call_id)
+        url = '{0}/{1}/events'.format(self.path, self.call_id)
         data = self.client.get(url).json()
         return [from_api(e) for e in data]
 
@@ -395,7 +395,7 @@ class Application(GenericResource):
         :return: Application instance
         """
         client = cls.client or get_client()
-        url = '{}{}'.format(cls._path, application_id)
+        url = '{0}{1}'.format(cls._path, application_id)
         data_as_dict = client.get(url).json()
         application = cls(data=from_api(data_as_dict))
         return application
@@ -412,7 +412,7 @@ class Application(GenericResource):
         :return: self if it's patched
         """
         client = self.client or get_client()
-        url = '{}{}'.format(self._path, self.id)
+        url = '{0}{1}'.format(self._path, self.id)
         cleaned_data = {k: v for k, v in data.items() if v is not None and k in self._fields}
         client.post(url, data=to_api(cleaned_data))
         if cleaned_data:
@@ -426,12 +426,12 @@ class Application(GenericResource):
         :return: True if it's deleted
         """
         client = self.client or get_client()
-        url = '{}{}'.format(self._path, self.id)
+        url = '{0}{1}'.format(self._path, self.id)
         client.delete(url)
         return True
 
     def refresh(self):
-        url = '{}{}'.format(self._path, self.id)
+        url = '{0}{1}'.format(self._path, self.id)
         data = self.client.get(url).json()
         self.set_up(from_api(data))
 
@@ -485,7 +485,7 @@ class Bridge(AudioMixin, GenericResource):
         :return: Bridge instance
         """
         client = cls.client or get_client()
-        url = '{}/{}'.format(cls.path, bridge_id)
+        url = '{0}/{1}'.format(cls.path, bridge_id)
         data_as_dict = client.get(url).json()
         bridge = cls(data_as_dict['id'], data=data_as_dict)
         return bridge
@@ -530,7 +530,7 @@ class Bridge(AudioMixin, GenericResource):
         """
         kwargs['call_ids'] = [c.call_id for c in calls]
         data = to_api(kwargs)
-        url = '{}/{}'.format(self.path, self.id)
+        url = '{0}/{1}'.format(self.path, self.id)
 
         self.client.post(url, data=data)
         self.calls = calls
@@ -539,20 +539,20 @@ class Bridge(AudioMixin, GenericResource):
         """
         Get the list of calls that are on the bridge.
         """
-        url = '{}/{}/calls'.format(self.path, self.id)
+        url = '{0}/{1}/calls'.format(self.path, self.id)
         r = self.client.get(url)
         self.calls = [Call(v) for v in r.json()]
         return self.calls
 
     def get_audio_url(self):
-        return '{}/{}/audio'.format(self.path, self.id)
+        return '{0}/{1}/audio'.format(self.path, self.id)
 
     def refresh(self):
         """
         Updates bridge fields internally for this bridge instance
         :return: None
         """
-        url = '{}/{}'.format(self.path, self.id)
+        url = '{0}/{1}'.format(self.path, self.id)
         data = self.client.get(url).json()
         self.set_up(from_api(data))
 
@@ -571,7 +571,7 @@ class Account(BaseResource):
             self.set_up(data)
 
     def __repr__(self):
-        return 'Account(user_id={})'.format(self.client.uid)
+        return 'Account(user_id={0})'.format(self.client.uid)
 
     @classmethod
     def get(cls):
@@ -599,7 +599,7 @@ class Account(BaseResource):
         transactions.
         """
         client = cls.client or get_client()
-        url = '{}{}'.format(cls._path, 'transactions')
+        url = '{0}{1}'.format(cls._path, 'transactions')
         json_resp = client.get(url, params=to_api(query_params)).json()
         data = [from_api(d) for d in json_resp]
         return data
@@ -620,7 +620,7 @@ class Gather(CreateResource):
         self.completed_time = None
         self.digits = None
 
-        self.path = 'calls/{}/gather'.format(call_id)
+        self.path = 'calls/{0}/gather'.format(call_id)
 
     def get(self, gather_id):
         """
@@ -630,7 +630,7 @@ class Gather(CreateResource):
 
         :return: Gather instance
         """
-        url = '{}/{}'.format(self.path, gather_id)
+        url = '{0}/{1}'.format(self.path, gather_id)
         data_as_dict = self.client.get(url).json()
         self.set_up(from_api(data_as_dict))
         return self
@@ -691,7 +691,7 @@ class Gather(CreateResource):
         Update the gather DTMF. The only update allowed is state:completed to stop the gather.
         """
         assert self.id is not None
-        url = '{}/{}'.format(self.path, self.id)
+        url = '{0}/{1}'.format(self.path, self.id)
         data = to_api({'state': 'completed'})
         self.client.post(url, data=data)
 
@@ -744,7 +744,7 @@ class Conference(AudioMixin, CreateResource):
         super(Conference, self).set_up(data)
 
     def get_audio_url(self):
-        return '{}/{}/audio'.format(self.path, self.id)
+        return '{0}/{1}/audio'.format(self.path, self.id)
 
     @classmethod
     def create(cls, from_, **params):
@@ -776,7 +776,7 @@ class Conference(AudioMixin, CreateResource):
         :return: new Conference instance with all provided fields.
         """
         client = cls.client or get_client()
-        url = '{}/{}'.format(cls.path, conf_id)
+        url = '{0}/{1}'.format(cls.path, conf_id)
         data_as_dict = client.get(url).json()
         return cls(data_as_dict)
 
@@ -789,7 +789,7 @@ class Conference(AudioMixin, CreateResource):
         :return: the instance with updated fields.
         """
         client = self.client
-        url = '{}/{}'.format(self.path, self.id)
+        url = '{0}/{1}'.format(self.path, self.id)
         data = to_api(params)
         client.post(url, data=data)
         self.set_up(params)
@@ -801,7 +801,7 @@ class Conference(AudioMixin, CreateResource):
         displayed as completed.
         """
         client = self.client
-        url = '{}/{}/members'.format(self.path, self.id)
+        url = '{0}/{1}/members'.format(self.path, self.id)
         member_list = client.get(url).json()
         return [self.member(member) for member in member_list]
 
@@ -811,7 +811,7 @@ class Conference(AudioMixin, CreateResource):
         Important:-- The callId must refer to an active call that was created using this conferenceId.
         """
         client = self.client
-        url = '{}/{}/members'.format(self.path, self.id)
+        url = '{0}/{1}/members'.format(self.path, self.id)
         params['call_id'] = call_id
         data = to_api(params)
         r = client.post(url, data=data)
@@ -872,7 +872,7 @@ class ConferenceMember(AudioMixin, BaseResource):
         :return: ConferenceMember instance.
         """
         client = self.client
-        url = 'conferences/{}/members/{}'.format(self.conf_id, self.id)
+        url = 'conferences/{0}/members/{1}'.format(self.conf_id, self.id)
         data = from_api(client.get(url).json())
         self.set_up(data)
         return self
@@ -887,7 +887,7 @@ class ConferenceMember(AudioMixin, BaseResource):
         :return updated object
         """
         client = self.client
-        url = 'conferences/{}/members/{}'.format(self.conf_id, self.id)
+        url = 'conferences/{0}/members/{1}'.format(self.conf_id, self.id)
         data = to_api(params)
         client.post(url, data=data)
         self.set_up(params)
@@ -897,7 +897,7 @@ class ConferenceMember(AudioMixin, BaseResource):
         return 'ConferenceMember(%r, state=%r)' % (self.id, self.state or 'Unknown')
 
     def get_audio_url(self):
-        return 'conferences/{}/members/{}/audio'.format(self.conf_id, self.id)
+        return 'conferences/{0}/members/{1}/audio'.format(self.conf_id, self.id)
 
 
 class Recording(ListResource):
@@ -924,7 +924,7 @@ class Recording(ListResource):
             self.id = data
 
     def __repr__(self):
-        return 'Recording({}, state={})'.format(self.id, self.state or 'Unknown')
+        return 'Recording({0}, state={1})'.format(self.id, self.state or 'Unknown')
 
     def set_up(self, data):
         call = data.pop('call', None)
@@ -957,7 +957,7 @@ class Recording(ListResource):
         :return: Recording instance
         """
         client = cls.client or get_client()
-        url = '{}/{}'.format(cls._path, recording_id)
+        url = '{0}/{1}'.format(cls._path, recording_id)
         data_as_dict = client.get(url).json()
         recording = cls(data=data_as_dict)
         return recording
@@ -1011,7 +1011,7 @@ class PhoneNumber(ListResource):
             self.state = self.NUMBER_STATES.available
 
     def __repr__(self):  # pragma: no cover
-        return 'PhoneNumber(number={})'.format(self.number or 'Unknown')
+        return 'PhoneNumber(number={0})'.format(self.number or 'Unknown')
 
     def set_up(self, data):
         app_id = data.pop('application', None) or data.pop('application_id', None)
@@ -1066,7 +1066,7 @@ class PhoneNumber(ListResource):
         :return: PhoneNumber instance.
         """
         client = get_client()
-        url = '{}/{}'.format(cls._path, number_id)
+        url = '{0}/{1}'.format(cls._path, number_id)
         data = client.get(url).json()
         return cls(data=data)
 
@@ -1094,7 +1094,7 @@ class PhoneNumber(ListResource):
         :return: PhoneNumber instance
         """
         client = get_client()
-        url = '{}/{}'.format(self._path, self.id)
+        url = '{0}/{1}'.format(self._path, self.id)
         app = data.pop('application', None)
         if isinstance(app, Application):
             app_id = app.id
@@ -1118,11 +1118,11 @@ class PhoneNumber(ListResource):
         :return: None.
         """
         client = get_client()
-        url = '{}/{}'.format(self._path, self.id)
+        url = '{0}/{1}'.format(self._path, self.id)
         client.delete(url)
 
     def refresh(self):
-        url = '{}/{}'.format(self._path, self.id)
+        url = '{0}/{1}'.format(self._path, self.id)
         data = self.client.get(url).json()
         self.set_up(from_api(data))
 
@@ -1212,7 +1212,7 @@ class PhoneNumber(ListResource):
         """
         cls.validate_search_query(params)
         client = get_client()
-        url = client.endpoint + '/v1/{}/local'.format(cls._available_numbers_path)
+        url = client.endpoint + '/v1/{0}/local'.format(cls._available_numbers_path)
         data = client.build_request('get', url, params=to_api(params), join_endpoint=False).json()
         return [cls(number, available=True) for number in data]
 
@@ -1229,7 +1229,7 @@ class PhoneNumber(ListResource):
         :return: List of AvailableNumber instances.
         """
         client = get_client()
-        url = client.endpoint + '/v1/{}/tollFree'.format(cls._available_numbers_path)
+        url = client.endpoint + '/v1/{0}/tollFree'.format(cls._available_numbers_path)
         data = client.build_request('get', url, params=to_api(params), join_endpoint=False).json()
         return [cls(number, available=True) for number in data]
 
@@ -1260,7 +1260,7 @@ class PhoneNumber(ListResource):
         """
         cls.validate_search_query(params)
         client = get_client()
-        url = client.endpoint + '/v1/{}/local'.format(cls._available_numbers_path)
+        url = client.endpoint + '/v1/{0}/local'.format(cls._available_numbers_path)
         data = client.build_request('post', url, params=to_api(params), join_endpoint=False).json()
         return [cls(number) for number in data]
 
@@ -1273,7 +1273,7 @@ class PhoneNumber(ListResource):
         :return: List of PhoneNumber instances.
         """
         client = get_client()
-        url = client.endpoint + '/v1/{}/tollFree'.format(cls._available_numbers_path)
+        url = client.endpoint + '/v1/{0}/tollFree'.format(cls._available_numbers_path)
         data = client.build_request('post', url,
                                     data=to_api(dict(quantity=quantity)), join_endpoint=False).json()
         return [cls(number) for number in data]
@@ -1307,7 +1307,7 @@ class NumberInfo(BaseResource):
             raise ValueError('Invalid data')
 
     def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.name or self.number)
+        return '{0}({1})'.format(self.__class__.__name__, self.name or self.number)
 
     @classmethod
     def get(cls, number):
@@ -1317,7 +1317,7 @@ class NumberInfo(BaseResource):
         """
         client = get_client()
         number = six.moves.urllib.parse.quote(number)
-        url = '{}/v1/{}/{}'.format(client.endpoint, cls._path, number)
+        url = '{0}/v1/{1}/{2}'.format(client.endpoint, cls._path, number)
         data = client.get(url, join_endpoint=False).json()
         return cls(data=data)
 
@@ -1345,7 +1345,7 @@ class Media(ListResource):
             self.set_up(from_api(data))
         elif isinstance(data, six.string_types):
             self.media_name = data
-            self.media_url = '{}/{}'.format(self._path, self.media_name)
+            self.media_url = '{0}/{1}'.format(self._path, self.media_name)
         else:
             raise TypeError('Accepted only id or media data as dictionary')
 
@@ -1380,7 +1380,7 @@ class Media(ListResource):
         :return: None
         """
         assert self.media_name is not None, 'Id field is required for this action'
-        url = '{}/{}'.format(self._path, self.media_name)
+        url = '{0}/{1}'.format(self._path, self.media_name)
         self.client.delete(url)
 
     def download(self):
@@ -1405,7 +1405,7 @@ class Media(ListResource):
                                                                      'or with open file descriptor'
         if file_path:
             if not file_exists(file_path):
-                raise AppPlatformError('Provided file does not exists {}'.format(file_path))
+                raise AppPlatformError('Provided file does not exists {0}'.format(file_path))
             with open(file_path, 'rb') as fd:
                 content = fd.read()
         elif fd:
@@ -1413,13 +1413,13 @@ class Media(ListResource):
             content = fd.read()
         else:
             assert isinstance(content, six.binary_type), 'Only bytes accepted in content'
-        url = '{}/{}'.format(cls._path, media_name)
+        url = '{0}/{1}'.format(cls._path, media_name)
         client = get_client()
         client.build_request('put', url, data=content, headers={'content-type': mime})
         return cls(media_name)
 
     def __repr__(self):
-        return 'Media({})'.format(self.media_name)
+        return 'Media({0})'.format(self.media_name)
 
 
 class Message(GenericResource):
@@ -1506,7 +1506,7 @@ class Message(GenericResource):
             raise TypeError('Accepted only message-id or message data as dictionary')
 
     def __repr__(self):
-        return 'Message({}, state={}, delivery_state={})'.format(self.id, self.state, self.delivery_state)
+        return 'Message({0}, state={1}, delivery_state={2})'.format(self.id, self.state, self.delivery_state)
 
     def set_up(self, data):
         self.from_ = self.from_ or data.get('from')
@@ -1566,7 +1566,7 @@ class Message(GenericResource):
         :return: new Message instance with all provided fields.
         """
         client = cls.client or get_client()
-        url = '{}/{}'.format(cls._path, message_id)
+        url = '{0}/{1}'.format(cls._path, message_id)
         data_as_dict = client.get(url).json()
         return cls(data_as_dict)
 
@@ -1681,7 +1681,7 @@ class Domain(GenericResource):
         :return: Domain instance
         """
         client = cls.client or get_client()
-        url = '{}/{}'.format(cls._path, domain_id)
+        url = '{0}/{1}'.format(cls._path, domain_id)
         data_as_dict = client.get(url).json()
         domain = cls(data=from_api(data_as_dict))
         return domain
@@ -1692,7 +1692,7 @@ class Domain(GenericResource):
         :return: self if it's patched
         """
         client = self.client or get_client()
-        url = '{}/{}'.format(self._path, self.id)
+        url = '{0}/{1}'.format(self._path, self.id)
         cleaned_data = {k: v for k, v in data.items() if v is not None and k in self._fields}
         client.post(url, data=to_api(cleaned_data))
         if cleaned_data:
@@ -1706,12 +1706,12 @@ class Domain(GenericResource):
         :return: True if it's deleted
         """
         client = self.client or get_client()
-        url = '{}/{}'.format(self._path, self.id)
+        url = '{0}/{1}'.format(self._path, self.id)
         client.delete(url)
         return True
 
     def refresh(self):
-        url = '{}/{}'.format(self._path, self.id)
+        url = '{0}/{1}'.format(self._path, self.id)
         data = self.client.get(url).json()
         self.set_up(from_api(data))
 
@@ -1720,7 +1720,7 @@ class Domain(GenericResource):
         List all endpoints from a domain.
         """
         client = self.client
-        url = '{}/{}/endpoints'.format(self._path, self.id)
+        url = '{0}/{1}/endpoints'.format(self._path, self.id)
         endpoint_list = client.get(url).json()
         return [Endpoint(self.id, data) for data in endpoint_list]
 
@@ -1735,7 +1735,7 @@ class Domain(GenericResource):
         :return: Endpoint instance
         """
         client = self.client
-        url = '{}/{}/endpoints'.format(self._path, self.id)
+        url = '{0}/{1}/endpoints'.format(self._path, self.id)
         data = to_api(params)
         r = client.post(url, data=data)
         endpoint_id = get_location_id(r)
@@ -1780,7 +1780,7 @@ class Endpoint(GenericResource):
         """
         client = cls.client or get_client()
         p_data = to_api(data)
-        url = 'domains/{}/endpoints'.format(domain_id)
+        url = 'domains/{0}/endpoints'.format(domain_id)
         resp = client.post(url, data=p_data)
         endpoint_id = get_location_id(resp)
         data.update({'id': endpoint_id})
@@ -1797,7 +1797,7 @@ class Endpoint(GenericResource):
         :return: List of Endpoints instances
         """
         client = cls.client or get_client()
-        url = 'domains/{}/endpoints'.format(domain_id)
+        url = 'domains/{0}/endpoints'.format(domain_id)
         data_as_list = client.get(url, params=dict(page=page, size=size)).json()
         return [cls(domain_id, data=from_api(v)) for v in data_as_list]
 
@@ -1810,7 +1810,7 @@ class Endpoint(GenericResource):
         :return: Endpoint instance
         """
         client = cls.client or get_client()
-        url = 'domains/{}/endpoints/{}'.format(domain_id, endpoint_id)
+        url = 'domains/{0}/endpoints/{1}'.format(domain_id, endpoint_id)
         data_as_dict = client.get(url).json()
         endpoint = cls(domain_id, data=from_api(data_as_dict))
         return endpoint
@@ -1823,7 +1823,7 @@ class Endpoint(GenericResource):
         :return: self if it's patched
         """
         client = self.client or get_client()
-        url = 'domains/{}/endpoints/{}'.format(self.domain_id, self.id)
+        url = 'domains/{0}/endpoints/{1}'.format(self.domain_id, self.id)
         cleaned_data = {k: v for k, v in data.items() if v is not None and k in self._fields}
         client.post(url, data=to_api(cleaned_data))
         if cleaned_data:
@@ -1837,7 +1837,7 @@ class Endpoint(GenericResource):
         :return: True if it's deleted
         """
         client = self.client or get_client()
-        url = 'domains/{}/endpoints/{}'.format(self.domain_id, self.id)
+        url = 'domains/{0}/endpoints/{1}'.format(self.domain_id, self.id)
         client.delete(url)
         return True
 
@@ -1848,7 +1848,7 @@ class Endpoint(GenericResource):
         :return: EndpointToken instance
         """
         client = self.client or get_client()
-        url = 'domains/{}/endpoints/{}/tokens'.format(self.domain_id, self.id)
+        url = 'domains/{0}/endpoints/{1}/tokens'.format(self.domain_id, self.id)
         data = to_api(params)
         resp = client.post(url, data=data)
         token_id = get_location_id(resp)
@@ -1857,7 +1857,7 @@ class Endpoint(GenericResource):
         return EndpointToken(self.domain_id, self.id, data=from_api(data_as_dict))
 
     def refresh(self):
-        url = 'domains/{}/endpoints/{}'.format(self.domain_id, self.id)
+        url = 'domains/{0}/endpoints/{1}'.format(self.domain_id, self.id)
         data = self.client.get(url).json()
         self.set_up(from_api(data))
 
@@ -1890,7 +1890,7 @@ class EndpointToken(GenericResource):
         :return: EndpointToken instance
         """
         client = cls.client or get_client()
-        url = 'domains/{}/endpoints/{}/tokens'.format(domain_id, endpoint_id)
+        url = 'domains/{0}/endpoints/{1}/tokens'.format(domain_id, endpoint_id)
         data = to_api(params)
         resp = client.post(url, data=data)
         token_id = get_location_id(resp)
@@ -1904,7 +1904,7 @@ class EndpointToken(GenericResource):
         :return: True if it's deleted
         """
         client = self.client or get_client()
-        url = 'domains/{}/endpoints/{}/tokens/{}'.format(self.domain_id, self.endpoint_id, self.id)
+        url = 'domains/{0}/endpoints/{1}/tokens/{2}'.format(self.domain_id, self.endpoint_id, self.id)
         client.delete(url)
         return True
 
@@ -1979,7 +1979,7 @@ class UserError(ListResource):
             raise TypeError('Accepted only error-id or error data as dictionary')
 
     def __repr__(self):
-        return 'UserError({}, message={})'.format(self.id, self.message)
+        return 'UserError({0}, message={1})'.format(self.id, self.message)
 
     def set_up(self, data):
         details = data.pop('details', [])
@@ -2016,6 +2016,6 @@ class UserError(ListResource):
         :return: new UserError instance with all provided fields.
         """
         client = cls.client or get_client()
-        url = '{}/{}'.format(cls._path, error_id)
+        url = '{0}/{1}'.format(cls._path, error_id)
         data_as_dict = client.get(url).json()
         return cls(data_as_dict)

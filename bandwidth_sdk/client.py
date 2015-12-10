@@ -81,7 +81,7 @@ def Client(user_id=None, token=None, secret=None):
         # at least one keyword argument was specified, require that all are
         # given or raise an error.
         if not all((user_id, token, secret)):
-            raise ValueError('{}{}'.format(
+            raise ValueError('{0}{1}'.format(
                 _HELP_MISSING_PARAMS, Client.__doc__
             ))
 
@@ -93,7 +93,7 @@ def Client(user_id=None, token=None, secret=None):
         secret = os.environ.get('BANDWIDTH_API_SECRET')
 
         if not all((user_id, token, secret)):
-            raise EnvironmentError('{}{}'.format(
+            raise EnvironmentError('{0}{1}'.format(
                 _HELP_MISSING_ENV_VARS, Client.__doc__
             ))
 
@@ -103,7 +103,7 @@ def Client(user_id=None, token=None, secret=None):
         if file_exists(config_path):
             user_id, token, secret = _load_config(config_path)
         else:
-            raise ValueError('{}{}'.format(
+            raise ValueError('{0}{1}'.format(
                 _HELP_CONFIG_FILE_MISSING % config_path, Client.__doc__
             ))
 
@@ -114,7 +114,7 @@ def Client(user_id=None, token=None, secret=None):
 
     else:
         # could not locate configuration variables, raise an error
-        raise ValueError('No configuration provided. {}'.format(Client.__doc__))
+        raise ValueError('No configuration provided. {0}'.format(Client.__doc__))
 
     _global_client = RESTClientObject(user_id, (token, secret))
 
@@ -125,7 +125,7 @@ def _load_config(config_path):
     try:
         return get_creds_from_file(config_path)
     except configparser.Error:
-        raise ValueError('{}{}'.format(
+        raise ValueError('{0}{1}'.format(
             _HELP_CONFIG_FORMAT % config_path, Client.__doc__
         ))
 

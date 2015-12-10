@@ -42,7 +42,7 @@ class RESTClientObject(object):
             self.log_hook(response)  # pragma: no cover
 
     def _join_endpoint(self, url):
-        return '{}/v1/users/{}/{}'.format(self.endpoint, self.uid, url)
+        return '{0}/v1/users/{1}/{2}'.format(self.endpoint, self.uid, url)
 
     def request(self, method, *args, **kwargs):
         assert method in ('get', 'post', 'delete', 'patch', 'put')
