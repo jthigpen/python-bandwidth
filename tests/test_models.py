@@ -14,7 +14,7 @@ from six.moves.urllib.parse import parse_qsl, urlsplit
 
 
 def assertJsonEq(first, second, msg='Ouups'):
-    assert sorted(first) == sorted(second), '%r != %r\n%s' % (first,
+    assert sorted(first) == sorted(second), '{0!r} != {1!r}\n{2!s}'.format(first,
                                                               second,
                                                               msg)
 

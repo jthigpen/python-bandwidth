@@ -211,7 +211,7 @@ class Call(AudioMixin, GenericResource):
         return [cls(v) for v in data_as_list]
 
     def __repr__(self):
-        return 'Call(%r, state=%r)' % (self.call_id, self.state or 'Unknown')
+        return 'Call({0!r}, state={1!r})'.format(self.call_id, self.state or 'Unknown')
 
     def get_audio_url(self):
         return '{}/{}/audio'.format(self.path, self.call_id)
@@ -781,7 +781,7 @@ class Conference(AudioMixin, CreateResource):
         return cls(data_as_dict)
 
     def __repr__(self):
-        return 'Conference(%r, state=%r)' % (self.id, self.state or 'Unknown')
+        return 'Conference({0!r}, state={1!r})'.format(self.id, self.state or 'Unknown')
 
     def update(self, **params):
         """
@@ -894,7 +894,7 @@ class ConferenceMember(AudioMixin, BaseResource):
         return self
 
     def __repr__(self):  # pragma: no cover
-        return 'ConferenceMember(%r, state=%r)' % (self.id, self.state or 'Unknown')
+        return 'ConferenceMember({0!r}, state={1!r})'.format(self.id, self.state or 'Unknown')
 
     def get_audio_url(self):
         return 'conferences/{}/members/{}/audio'.format(self.conf_id, self.id)
