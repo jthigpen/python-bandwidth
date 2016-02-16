@@ -978,7 +978,7 @@ class Recording(ListResource):
         """
         url = '{}/{}/transcriptions/{}'.format(self._path, self.id, transcription_id)
         transcription = self.client.get(url).json()
-        return [Transcription(transcription)]
+        return Transcription(transcription)
 
     @classmethod
     def get(cls, recording_id):
