@@ -24,16 +24,13 @@ class RESTClientObject(object):
     default_timeout = 60
     headers = {'content-type': 'application/json'}
 
-    def __init__(self, user_id, auth, endpoint,
+    def __init__(self, user_id, auth, endpoint=ENDPOINT,
                  log=None, log_hook=None):
+        self.endpoint=endpoint
         self.log_hook = log_hook
         self.uid = user_id
         self.auth = auth
         self.log = log or logger
-        if (endpoint==None):
-            self.endpoint=ENDPOINT
-        else:
-            self.endpoint=endpoint
 
     def _log_response(self, response):
         """

@@ -974,6 +974,8 @@ class Recording(ListResource):
         """
         Get specific transcription by id
 
+        :param transcription_id: if of the transcription to be queried
+
         :return: Transcription.
         """
         url = '{}/{}/transcriptions/{}'.format(self._path, self.id, transcription_id)
@@ -1007,9 +1009,6 @@ class Recording(ListResource):
 
 
 class Transcription(BaseResource):
-    """
-    Transcription
-    """
     STATES = enum('transcribing', 'completed', 'error')
     _fields = frozenset(('id', 'state', 'time', 'text', 'time', 'chargeableDuration', 'textSize', 'textUrl'))
 

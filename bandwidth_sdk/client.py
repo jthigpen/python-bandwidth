@@ -116,7 +116,10 @@ def Client(user_id=None, token=None, secret=None, endpoint=None):
         # could not locate configuration variables, raise an error
         raise ValueError('No configuration provided. {}'.format(Client.__doc__))
 
-    _global_client = RESTClientObject(user_id, (token, secret), endpoint)
+    if (endpoint!=None):
+        _global_client = RESTClientObject(user_id, (token, secret), endpoint)
+    else:
+        _global_client = RESTClientObject(user_id, (token, secret))
 
     return _global_client
 
