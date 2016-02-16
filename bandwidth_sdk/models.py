@@ -948,6 +948,38 @@ class Recording(ListResource):
             cls._path, params=to_api(dict(page=page, size=size))).json()
         return [cls(data=v) for v in data_as_list]
 
+    def transcribe(self):
+        """
+        Transcribe a recording
+
+        :return: Transcription.
+        """
+        url = '{}/{}/transcriptions'.format(self._path, self.id)
+        response = self.client.post(url)
+        transcription_id = get_location_id(response)
+        transcription = Transcription(transcription_id)
+        return transcription
+
+    def get_transcriptions(self):
+        """
+        Get all transcriptions belonging to specific recording
+
+        :return: List of transcription instances.
+        """
+        url = '{}/{}/transcriptions'.format(self._path, self.id)
+        transcriptions = self.client.get(url).json()
+        return [Transcription(d) for d in transcriptions]
+
+    def get_transcription(self, transcription_id):
+        """
+        Get specific transcription by id
+
+        :return: Transcription.
+        """
+        url = '{}/{}/transcriptions/{}'.format(self._path, self.id, transcription_id)
+        transcription = self.client.get(url).json()
+        return [Transcription(transcription)]
+
     @classmethod
     def get(cls, recording_id):
         """
@@ -973,6 +1005,36 @@ class Recording(ListResource):
         resp = client.get(self.media, join_endpoint=False)
         return resp.content, resp.headers['Content-Type']
 
+
+class Transcription(BaseResource):
+    """
+    Transcription
+    """
+    STATES = enum('transcribing', 'completed', 'error')
+    _fields = frozenset(('id', 'state', 'time', 'text', 'time', 'chargeableDuration', 'textSize', 'textUrl'))
+
+    def __init__(self, data):
+        self.id = None
+        self.state = None
+        self.time = None
+        self.text = None
+        self.time = None
+        self.chargeableDuration = None
+        self.textSize = None
+
+        if isinstance(data, dict):
+            self.set_up(from_api(data))
+        elif isinstance(data, six.string_types):
+            self.id = data
+
+    def __repr__(self):
+        return 'Transcription({}, state={})'.format(self.id, self.state or 'Unknown')
+
+    def set_up(self, data):
+        transcription = data.pop('transcription', None)
+        if transcription:
+            data['transcription'] = Transcription(transcription.split('/')[-1])
+        super(Transcription, self).set_up(data)
 
 class PhoneNumber(ListResource):
     _path = 'phoneNumbers'

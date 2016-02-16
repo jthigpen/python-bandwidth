@@ -34,7 +34,7 @@ _HELP_CONFIG_FILE_MISSING = '' \
     ' not set if you\'re trying to use .bndsdkrc.'
 
 
-def Client(user_id=None, token=None, secret=None):
+def Client(user_id=None, token=None, secret=None, endpoint=None):
     """
     Initialize the bandwidth sdk client.  This function will attempt to
     gather credentials from one of several different locations in the
@@ -116,7 +116,7 @@ def Client(user_id=None, token=None, secret=None):
         # could not locate configuration variables, raise an error
         raise ValueError('No configuration provided. {}'.format(Client.__doc__))
 
-    _global_client = RESTClientObject(user_id, (token, secret))
+    _global_client = RESTClientObject(user_id, (token, secret), endpoint)
 
     return _global_client
 
