@@ -26,7 +26,7 @@ class RESTClientObject(object):
 
     def __init__(self, user_id, auth, endpoint=ENDPOINT,
                  log=None, log_hook=None):
-        self.endpoint=endpoint
+        self.endpoint = endpoint
         self.log_hook = log_hook
         self.uid = user_id
         self.auth = auth
