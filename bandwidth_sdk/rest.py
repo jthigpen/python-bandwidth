@@ -6,8 +6,6 @@ from .errors import AppPlatformError
 
 logger = logging.getLogger(__package__)
 
-ENDPOINT = 'https://api.catapult.inetwork.com'
-
 class RESTClientObject(object):
     """
     Parameters
@@ -24,7 +22,7 @@ class RESTClientObject(object):
     default_timeout = 60
     headers = {'content-type': 'application/json'}
 
-    def __init__(self, user_id, auth, endpoint=ENDPOINT,
+    def __init__(self, user_id, auth, endpoint,
                  log=None, log_hook=None):
         self.endpoint = endpoint
         self.log_hook = log_hook

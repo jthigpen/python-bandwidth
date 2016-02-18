@@ -12,6 +12,8 @@ logger = logging.getLogger(__package__)
 __all__ = ('Client', 'get_client', 'set_client')
 
 
+ENDPOINT = 'https://api.catapult.inetwork.com'
+
 _global_client = None
 
 _HELP_MISSING_ENV_VARS = '' \
@@ -34,7 +36,7 @@ _HELP_CONFIG_FILE_MISSING = '' \
     ' not set if you\'re trying to use .bndsdkrc.'
 
 
-def Client(user_id=None, token=None, secret=None, endpoint=None):
+def Client(user_id=None, token=None, secret=None, endpoint=ENDPOINT):
     """
     Initialize the bandwidth sdk client.  This function will attempt to
     gather credentials from one of several different locations in the
