@@ -1009,17 +1009,30 @@ class Recording(ListResource):
 
 
 class Transcription(BaseResource):
+    """
+    The Transcription resource is a representation of the transcription payload
+    returned by catapult API
+
+    :param id : Transcription unique id
+    :param state : Transcription states
+    :param time : The time that the Transcription was created
+    :param text : The Transcription text
+    :param chargeable_duration : The seconds between activeTime and endTime for the recording;
+        this is the time that is going to be used to charge the resource. Note: transcriptions is billed in 1 minute units.
+    :param text_size : The size of the transcribed text
+    :param text_url : An url to the full text; this property is available regardless the textSize.
+    """
     STATES = enum('transcribing', 'completed', 'error')
-    _fields = frozenset(('id', 'state', 'time', 'text', 'time', 'chargeableDuration', 'textSize', 'textUrl'))
+    _fields = frozenset(('id', 'state', 'time', 'text', 'time', 'chargeable_duration', 'text_size', 'text_url'))
 
     def __init__(self, data):
         self.id = None
         self.state = None
         self.time = None
         self.text = None
-        self.time = None
-        self.chargeableDuration = None
-        self.textSize = None
+        self.chargeable_duration = None
+        self.text_size = None
+        self.text_url = None
 
         if isinstance(data, dict):
             self.set_up(from_api(data))
