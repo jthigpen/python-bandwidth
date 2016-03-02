@@ -73,6 +73,8 @@ def Client(user_id=None, token=None, secret=None, endpoint=ENDPOINT):
     :param token: catapult token
     :type secret: str
     :param secret: catapult secret
+    :type endpoint: str
+    :param endpoint: catapult endpoint
     :rtype: RESTClientObject
     :returns: bandwidth rest client
     """
@@ -118,10 +120,7 @@ def Client(user_id=None, token=None, secret=None, endpoint=ENDPOINT):
         # could not locate configuration variables, raise an error
         raise ValueError('No configuration provided. {}'.format(Client.__doc__))
 
-    if (endpoint!=None):
-        _global_client = RESTClientObject(user_id, (token, secret), endpoint)
-    else:
-        _global_client = RESTClientObject(user_id, (token, secret))
+    _global_client = RESTClientObject(user_id, (token, secret), endpoint)
 
     return _global_client
 
