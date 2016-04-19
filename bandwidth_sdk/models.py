@@ -138,7 +138,7 @@ class Call(AudioMixin, GenericResource):
 
     @classmethod
     def create(cls, caller, callee, bridge_id=None, recording_enabled=None, callback_url=None,
-               callback_http_method='POST', timeout=30, **kwargs):
+               callback_http_method=None, timeout=30, **kwargs):
         """
         Makes a phone call.
 
@@ -167,9 +167,11 @@ class Call(AudioMixin, GenericResource):
             'call_timeout': timeout,  # seconds
             'bridge_id': bridge_id,
             'recording_enabled': recording_enabled,
-            'callback_url': callback_url,
-            'callback_http_method': callback_http_method
+            'callback_url': callback_url
         }
+
+        if callback_http_method is not None:
+            data['callback_http_method'] = callback_http_method
 
         data.update(kwargs)
         json_data = to_api(data)
