@@ -35,6 +35,7 @@ class CreateResource(BaseResource):
     """
     Supports create interface.
     """
+
     @classmethod
     def create(cls, *args, **kwargs):  # pragma: no cover
         """
@@ -49,6 +50,7 @@ class ListResource(BaseResource):
     """
     Supports list interface.
     """
+
     @classmethod
     def list(cls, *args, **kwargs):  # pragma: no cover
         """
@@ -104,7 +106,7 @@ class Call(AudioMixin, GenericResource):
     path = 'calls'
     STATES = enum('started', 'rejected', 'active', 'completed', 'transferring')
     _fields = frozenset(('call_id', 'direction', 'from_', 'to', 'recording_enabled', 'callback_url',
-                         'state', 'start_time', 'active_time', 'end_time', 'bridge_id'))
+                         'callback_http_method', 'state', 'start_time', 'active_time', 'end_time', 'bridge_id'))
 
     def __init__(self, data):
         self.client = get_client()
@@ -115,6 +117,7 @@ class Call(AudioMixin, GenericResource):
         self.to = None
         self.recording_enabled = None
         self.callback_url = None
+        self.callback_http_method = None
         self.state = None
         self.start_time = None
         self.active_time = None
@@ -134,7 +137,8 @@ class Call(AudioMixin, GenericResource):
         super(Call, self).set_up(data)
 
     @classmethod
-    def create(cls, caller, callee, bridge_id=None, recording_enabled=None, callback_url=None, timeout=30, **kwargs):
+    def create(cls, caller, callee, bridge_id=None, recording_enabled=None, callback_url=None,
+               callback_http_method='POST', timeout=30, **kwargs):
         """
         Makes a phone call.
 
@@ -148,6 +152,11 @@ class Call(AudioMixin, GenericResource):
 
         :param recording_enabled: Indicates if the call should be recorded after being created.
 
+        :param callback_url: The full server URL where the call events related to the Call will be sent to.
+
+        :param callback_http_method: Determine if the callback event should be sent via HTTP GET or HTTP POST.
+            Values are "GET" or "POST" (if not set the default is POST).
+
         :return: new Call instance with @call_id and @from_, @to fields.
         """
         client = cls.client or get_client()
@@ -158,7 +167,8 @@ class Call(AudioMixin, GenericResource):
             'call_timeout': timeout,  # seconds
             'bridge_id': bridge_id,
             'recording_enabled': recording_enabled,
-            'callback_url': callback_url
+            'callback_url': callback_url,
+            'callback_http_method': callback_http_method
         }
 
         data.update(kwargs)
@@ -697,7 +707,6 @@ class Gather(CreateResource):
 
 
 class Conference(AudioMixin, CreateResource):
-
     """
     The Conference resource allows you create conferences, add members to it,
     play audio, speak text, mute/unmute members, hold/unhold members and other
@@ -1445,7 +1454,8 @@ class Message(GenericResource):
             r = client.post(url, data=post_data).json()
             return r
 
-        def push_message(self, sender, receiver, text=None, media_list=None, callback_url=None, tag=None, receipt_requested=None):
+        def push_message(self, sender, receiver, text=None, media_list=None, callback_url=None, tag=None,
+                         receipt_requested=None):
             message = Message._prepare_message(sender=sender, receiver=receiver, text=text,
                                                callback_url=callback_url, tag=tag,
                                                receipt_requested=receipt_requested,
@@ -1514,7 +1524,8 @@ class Message(GenericResource):
         super(Message, self).set_up(data)
 
     @classmethod
-    def _prepare_message(cls, sender, receiver, text=None, media_list=None, callback_url=None, tag=None, receipt_requested=None):
+    def _prepare_message(cls, sender, receiver, text=None, media_list=None, callback_url=None, tag=None,
+                         receipt_requested=None):
         if isinstance(sender, PhoneNumber):
             sender = sender.number
 
